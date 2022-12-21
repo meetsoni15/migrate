@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	nurl "net/url"
 	"os"
@@ -56,9 +57,10 @@ func (g *Gitlab) Open(url string) (source.Driver, error) {
 	if !ok {
 		return nil, ErrNoAccessToken
 	}
-
+	log.Println(password)
+	cli, _ := gitlab.NewClient("")
 	gn := &Gitlab{
-		client:     gitlab.NewClient(nil, password),
+		client:     cli,
 		url:        url,
 		migrations: source.NewMigrations(),
 	}
@@ -68,11 +70,11 @@ func (g *Gitlab) Open(url string) (source.Driver, error) {
 			Scheme: "https",
 			Host:   u.Host,
 		}
-
-		err = gn.client.SetBaseURL(uri.String())
-		if err != nil {
-			return nil, ErrInvalidHost
-		}
+		log.Println(uri)
+		// err = gn.client.SetBaseURL(uri.String())
+		// if err != nil {
+		// 	return nil, ErrInvalidHost
+		// }
 	}
 
 	pe := strings.Split(strings.Trim(u.Path, "/"), "/")
